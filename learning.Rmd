@@ -4,31 +4,37 @@ author: "Qing Zhao"
 date: "`r format(Sys.time(), '%a %b %d %X %Y')`"
 output:
   html_document:
-  toc: true
-  toc_depth: '4'
-  toc_float: true
-  number_sections: true
-  anchor_sections: true
-# fig_width: 15                   设置生成的图片大小
-# fig_height: 15                  设置生成的图片大小
-# code_download: true
+    toc: true
+    toc_depth: '4'
+    toc_float: true
+    number_sections: true
+    anchor_sections: true
+#   fig_width: 15                设置生成的图片大小
+#   fig_height: 15               设置生成的图片大小
+#   code_download: true
 keywords:
-- Dongbo Shi
 - Data Engineering
+- Dongbo Shi
+---
 
 
+<br/>
+<br/>
 
+# 第八讲：图形语法与数据可视化
+## 载入数据
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 
-# 第⼋讲：图形语法与数据可视化
-```{r setup, include=FALSE}
-
+library(tidyverse)
 economist <- read_csv("data/EconomistData.csv")
+
 p1 <- ggplot(economist, aes(x = CPI, y = HDI))
 p2 <- p1 + geom_point()
 print(p2)
 
 
 
-
 ```
+
+
 
