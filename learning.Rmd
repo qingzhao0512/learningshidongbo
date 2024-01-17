@@ -9,7 +9,7 @@ output:
     toc_float: true
     number_sections: true
     anchor_sections: true
-#   fig_width: 15                设置生成的图片大小
+#   fig_width: 15              # 设置生成的图片大小
 #   fig_height: 15               设置生成的图片大小
 #   code_download: true
 keywords:
@@ -37,4 +37,307 @@ print(p2)
 ```
 
 
+<br/>
+<br/>
 
+
+## 美术属性
+### aes：使⽤变量，例如通过学科（region）来赋值颜⾊
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+p3 <- p1 + geom_point(aes(color = Region))
+print(p3)
+
+
+```
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+
+
+### aes：使⽤常量调整颜⾊
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+p1 + geom_point(aes(color = "blue"))
+
+
+```
+
+
+
+
+<br/>
+<br/>
+
+
+
+### 使⽤常量调整颜⾊时，不调⽤aes函数
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+p1 + geom_point(color = "blue")
+
+
+```
+
+<br/>
+<br/>
+
+
+
+### 增加圆+拟合曲线
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+p3 <- p1 +
+  geom_point(shape = 1,                            # shape=1，空心圆；
+             size = 2.5, 
+             aes(color = Region)) +                
+  geom_smooth(method = "lm",
+              color = "darkred",                                
+              formula = y~ poly(x, 2),             # 指定二次多项式回归模型；
+              se = FALSE)                          # 拟合不包含SE。
+print(p3)
+
+
+```
+
+<br/>
+<br/>
+
+
+
+
+### 调整圆+拟合曲线
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+p4 <- p1 + 
+  geom_point(shape = 21,                         # shape=21，使用具有边框的实心圆形状的点；
+             size = 3,                           # 设置点的大小为3； 
+             fill = "white",                     # 将点的填充颜色设置为白色；
+             stroke = 1.5,                       # 设置点的边框宽度为1.5；
+             aes(color = Region)) +
+  geom_smooth(method = "lm",
+              color = "red",
+              aes(linetype = "R^2 = 56%"),       # 增加图例；
+              formula = y~ poly(x, 2),           # 指定二次多项式回归模型；
+              se = FALSE)                        # 拟合不包含SE。
+print(p4)
+
+
+```
+
+
+<br/>
+<br/>
+
+
+
+
+### 增加国家
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+library(ggrepel)                            # ggplot2图形上的标签调整；
+
+
+dat <- economist %>%
+  filter(Country %in% c("New Zealand","Norway","Singapore","Germany","United States",
+                        "United Kingdom","Japan","Britain","Barbados","France",
+                        "Spain","Botswana","CapVerde","Bhutan",
+                        "Rwanda","Italy","Brazil","Greece","China",
+                        "South Africa","India","Argentina","Russia",
+                        "Venezuela","Iraq","Congo","Myanmar","Sudan","Afghanistan"))
+
+
+p5 <- p4 +                                  # 在P4的基础上增加图层，所以底层的圆圈都是在的；
+  geom_text_repel(data = dat,               # 添加带标签的散点图；
+                  force = 0.5,              # 设置标签的排斥力（repulsion force），控制标签之间的间距；
+                  hjust = 0.1,              # 设置标签相对于点的水平对齐方式；
+                  size = 2,                 # 设置标签的文字大小；
+                  aes(label = Country),     # 设置标签的内容为国家的名称；
+                  max.overlaps = 30,        # 设置最大的重叠次数，防止标签过度重叠；
+                  box.padding = 0.1)        # 设置标签外框内边距。
+print(p5)
+
+
+```
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+
+### 增加X轴，Y轴
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+p6 <- p5 +
+  scale_x_continuous("Corruption Perceptions Index, 2011 (10 = least corrupt)", # 设置 x 轴的标签和刻度；
+                     breaks = 1:10,                                             # 设置 x 轴的刻度为1到10；
+                     limits = c(1,10.2),                                        # 设置 x 轴的显示范围；
+                     expand = c(0,0)) +            # 设置 x 轴的扩展参数，这里设置为0表示不扩展坐标轴范围；
+  scale_y_continuous("Human Development Index, 2011 (1 = best)",                # 设置 y 轴的标签和刻度；
+                     breaks = seq(0.2,1,0.1),      # 设置 y 轴的刻度为0.2到1，以0.1为间隔；
+                     limits = c(0.2,1.0)) +        # 设置 y 轴的显示范围；
+  scale_linetype_discrete(labels = paste0(expression(R^2)," = 56%"))   # 设置线型标签的内容；
+                                                   # expression() 函数用于创建带有数学表达式的文本标签。
+
+print(p6)
+
+
+
+
+```
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+
+### 调整圆圈颜色
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+p7 <- p6 +
+
+scale_color_manual(values=c("#014d64","#01a2d9","#7ad2f6",  # 属于ggplot2包；           
+                            "#00887d","#ee8f71","#7c260b"), # 手动设置颜色；
+                   labels=c("Americas","Asia Pacific",      # 为每个颜色指定标签，这些标签将在图例中显示；
+                            "East Europe & Central Asia",
+                            "West Europe","East Asia","South Asia"))
+print(p7)
+
+
+
+```
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+
+### 增加图表标题，去除图例标题
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+p8 <- p7 +
+  labs(title = "Corruption and human development",                                     # 设置图表的标题；
+       caption = "Source: Transparency International; UN Human Development Report") +  # 设置图表的注释；
+  guides(colour = guide_legend(title = element_blank()),       # 修改colour图例的外观和标题；    
+         linetype = guide_legend(title = element_blank()))     # 修改linetype图例的外观和标题。
+
+print(p8)
+
+
+
+```
+
+
+<br/>
+<br/>
+
+
+
+
+### 主题
+#### classic主题
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+p8 + theme_classic()          # 应用 "classic" 主题，这包括背景颜色、网格线样式等
+
+
+
+```
+
+
+<br/>
+<br/>
+
+
+
+#### stata主题
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+library(ggthemes)
+p8 + theme_stata()          # 应用 "stata" 主题，这包括背景颜色、网格线样式等
+
+
+
+```
+
+
+<br/>
+<br/>
+
+
+#### The Wall Street Journal主题
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+p8 + theme_wsj()          # 应用 "The Wall Street Journal" 主题，这包括背景颜色、网格线样式等
+
+
+
+```
+
+
+
+
+<br/>
+<br/>
+
+
+#### 自己做主题
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+
+p9 <- p8 +
+  theme(panel.background = element_rect(fill = "white"),                        # 背景是白色填充；
+        panel.grid.major.y = element_line(color = "grey",linetype = "solid"),   # Y轴网格线是灰色，实线；
+        panel.grid.major.x = element_blank(),                                   # X轴网格线删除；
+        axis.line.x = element_line(color = "black"),                            # 加上X轴，并把X轴用黑色表示；
+        axis.text.x = element_text(color = "black",size = 12),                  # 把X轴的文本，改成黑色，12号字；
+        axis.ticks.length.x = unit(-0.2, "cm"),                                 # 调整坐标上的标签，表示往表格外；
+        axis.ticks.length.y = unit(0.5, "cm"),            
+        axis.ticks.y = element_line(color = "grey"),
+        axis.text.y = element_text(color = "black",size = 12),
+        axis.title = element_text(face = "italic"),                             # X轴和Y轴的标签都调整为斜体；
+        plot.caption.position = "plot",                                         # caption放在图的左下角；
+        plot.caption = element_text(hjust = 0),            # caption的字体位置；h是横，v是纵；h=0是最左端，h=1是最右端；
+        legend.position = "top",                           # 图例位置最上面；
+        legend.box = "horizontal",                         # 图例横向排列；
+        legend.title = element_blank(),                    # 图例的title设置为空；
+        legend.key = element_blank(),                      # 图例的外框，取消；
+        legend.justification=c(-0.15,1)) +                 # 图例的位置；
+  guides(colour = guide_legend(nrow = 1,order=1))          # 图例的顺序。
+
+
+print(p9)
+
+
+
+```
