@@ -1,30 +1,34 @@
 ---
-title: "learning"
-author: "QING ZHAO"
-date: "1/17/2024"
-output: html_document
----
+title: "Data Engineering"
+author: "Qing Zhao"
+date: "`r format(Sys.time(), '%a %b %d %X %Y')`"
+output:
+  html_document:
+  toc: true
+  toc_depth: '4'
+  toc_float: true
+  number_sections: true
+  anchor_sections: true
+# fig_width: 15                   设置生成的图片大小
+# fig_height: 15                  设置生成的图片大小
+# code_download: true
+keywords:
+- Dongbo Shi
+- Data Engineering
 
+
+
+
+# 第⼋讲：图形语法与数据可视化
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+economist <- read_csv("data/EconomistData.csv")
+p1 <- ggplot(economist, aes(x = CPI, y = HDI))
+p2 <- p1 + geom_point()
+print(p2)
+
+
+
+
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
